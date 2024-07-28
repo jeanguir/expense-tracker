@@ -31,8 +31,12 @@ fun main() {
                 if (choice == "q" || choice == "й")
                     break
                 else {
-                    val str = choice.split(", ")
-                    addExpense(expenses, str[0], str[1].toInt(), a)
+                    try {
+                        val str = choice.split(", ")
+                        addExpense(expenses, str[0], str[1].toInt(), a)
+                    } catch(e: Exception) {
+                        println("Error")
+                    }
                 }
             }
         }
