@@ -55,16 +55,3 @@ fun printLists(lists: MutableList<String>) {
     println("[A] ADD NEW LIST")
     println("[E] EDIT LIST")
 }
-
-fun printExpenses(expense: List<Expense>) {
-    for (e in expense) {
-        print(e.name.padEnd(12))
-        println("${e.cost} ₸")
-    }
-}
-
-fun readExpenseDetail(field: String): String? {
-    print(field)
-    val input = readln()
-    return if (input != "n") input else return null
-}
