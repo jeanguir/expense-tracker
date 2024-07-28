@@ -1,33 +1,70 @@
 package org.example
 
-import kotlin.math.exp
-
-data class Expense(var cost: Int, var category: String, var name: String)
+data class Expense(var cost: Int, var name: String, var listIndex: Int)
 
 fun main() {
+    val lists = mutableListOf<String>()
     val expenses = mutableListOf<Expense>()
 
     while (true) {
-        val name = readExpenseDetail("Name: ") ?: break
-        val category = readExpenseDetail("Category: ") ?: break
-        val cost = readExpenseDetail("Cost: ") ?: break
-        
-        expenses.add(Expense(cost.toInt(), category, name))
-        println()
+        printLists(lists)
+        val input = readln()
+
+        if (input == "a" || input == "ф") {
+            print("Name new list: ")
+            lists.add(readln())
+        } else if (input == "e" || input == "у") {
+            print("List index: ")
+            val a = readln().toInt()
+
+            while (true) {
+                println("\n-- ${lists[a - 1]} --")
+                for (expense in expenses) {
+                    if (expense.listIndex == a) {
+                        println(expense.name.padEnd(16) + expense.cost)
+                    }
+                }
+
+                print("\nAdd element [Name, Cost] (q - to quit): ")
+                val choice = readln()
+
+                if (choice == "q" || choice == "й")
+                    break
+                else {
+                    val str = choice.split(", ")
+                    addExpense(expenses, str[0], str[1].toInt(), a)
+                }
+            }
+        }
+    }
+}
+
+fun addExpense(expenses: MutableList<Expense>, name: String, cost: Int, listIndex: Int) {
+    expenses.add(Expense(cost, name, listIndex))
+}
+
+fun printLists(lists: MutableList<String>) {
+    println("-- Lists --")
+
+    var i = 1
+    for (list in lists) {
+        println("${i++}. $list")
     }
 
-    println()
+    println("---------------")
+    println("[A] ADD NEW LIST")
+    println("[E] EDIT LIST")
+}
 
-    for (expense in expenses) {
-
-        print("${expense.name.padEnd(12)} || ")
-        print("${expense.category.padEnd(12)} || ")
-        println("${expense.cost} ₸")
+fun printExpenses(expense: List<Expense>) {
+    for (e in expense) {
+        print(e.name.padEnd(12))
+        println("${e.cost} ₸")
     }
 }
 
 fun readExpenseDetail(field: String): String? {
     print(field)
     val input = readln()
-    return if (input != "q") input else return null
+    return if (input != "n") input else return null
 }
