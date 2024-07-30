@@ -2,60 +2,87 @@ package org.example
 
 data class Expense(var cost: Int, var name: String, var listIndex: Int)
 
-fun main() {
-    val lists = mutableListOf<String>()
-    val expenses = mutableListOf<Expense>()
+class ExpenseTracker
+{
+    private val lists = mutableListOf<String>()
+    private val expenses = mutableListOf<Expense>()
 
-    while (true) {
-        printLists(lists)
-        val input = readln()
+    fun start() {
+        while (true) {
+            printLists()
+            val input = readln()
 
-        if (input == "a" || input == "ф") {
-            print("Name new list: ")
-            lists.add(readln())
-        } else if (input == "e" || input == "у") {
-            print("List index: ")
-            val a = readln().toInt()
+            when(input.lowercase()) {
+                "a", "ф" -> addNewList()
+                "e", "у" -> editList()
+                "q", "й" -> break
+            }
+        }
+    }
 
-            while (true) {
-                println("\n-- ${lists[a - 1]} --")
-                for (expense in expenses) {
-                    if (expense.listIndex == a) {
-                        println(expense.name.padEnd(16) + expense.cost)
-                    }
+    private fun editList() {
+        println()
+        print("List index: ")
+        val a = readln().toInt()
+
+        while (true) {
+            var total = 0
+
+            println("\n-- ${lists[a - 1]} --")
+            for (expense in expenses) {
+                if (expense.listIndex == a) {
+                    println(expense.name.padEnd(16) + expense.cost)
+                    total += expense.cost
                 }
+            }
+            println("--------------")
+            println("Total: $total")
+            println()
 
-                print("\nAdd element [Name, Cost] (q - to quit): ")
-                val choice = readln()
+            print("Add element [Name, Cost] (q - to quit): ")
+            val choice = readln()
 
-                if (choice == "q" || choice == "й")
-                    break
-                else {
-                    try {
-                        val str = choice.split(", ")
-                        addExpense(expenses, str[0], str[1].toInt(), a)
-                    } catch(e: Exception) {
-                        println("Error")
-                    }
+            if (choice == "q" || choice == "й")
+                break
+            else {
+                try {
+                    val str = choice.split(", ")
+                    addExpense(str[0], str[1].toInt(), a)
+                } catch(e: Exception) {
+                    val str = choice.split(" ")
+                    addExpense(str[0], str[1].toInt(), a)
                 }
             }
         }
     }
-}
 
-fun addExpense(expenses: MutableList<Expense>, name: String, cost: Int, listIndex: Int) {
-    expenses.add(Expense(cost, name, listIndex))
-}
-
-fun printLists(lists: MutableList<String>) {
-    println("-- Lists --")
-
-    var i = 1
-    for (list in lists) {
-        println("${i++}. $list")
+    private fun addNewList() {
+        println()
+        print("Name new list: ")
+        lists.add(readln())
     }
 
-    println("---------------")
-    println("[A] ADD NEW LIST")
-    println("[E] EDIT LIST")
+    private fun addExpense(name: String, cost: Int, listIndex: Int) {
+        expenses.add(Expense(cost, name, listIndex))
+    }
+
+    private fun printLists() {
+        println()
+        println("-- Lists --")
+
+        var i = 1
+        for (list in lists) {
+            println("${i++}. $list")
+        }
+
+        println("---------------")
+        println("[A] ADD NEW LIST")
+        println("[E] EDIT LIST")
+        println("[Q] QUIT")
+    }
+}
+
+fun main() {
+    val expenseTracker = ExpenseTracker()
+    expenseTracker.start()
 }
